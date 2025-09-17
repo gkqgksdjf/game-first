@@ -1,0 +1,38 @@
+# ========== Unity 기본 ==========
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# ========== 개인 설정 ==========
+UserSettings/
+.vscode/
+.idea/
+*.user
+*.userprefs
+
+# ========== Visual Studio / Rider ==========
+.vs/
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.pidb
+*.booproj
+*.svd
+
+# ========== 빌드 산출물 ==========
+*.apk
+*.aab
+*.unitypackage
+*.exe
+*.app
+*.xcodeproj
+*.ipa
+
+# ========== 기타 ==========
+.DS_Store
+Thumbs.db
