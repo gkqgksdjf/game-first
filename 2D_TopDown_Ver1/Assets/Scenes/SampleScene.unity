@@ -931,6 +931,7 @@ MonoBehaviour:
   slashAnimPrefab: {fileID: 2513380280062879169, guid: 3e90d3075a4d80842a667a8c97f1d0ff, type: 3}
   slashAnimSpawnPoint: {fileID: 2040880750}
   weaponCollider: {fileID: 1257271629}
+  swordAttackCD: 0.5
 --- !u!95 &1775842213
 Animator:
   serializedVersion: 5
@@ -992,7 +993,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b892b39101830474d95c26975a5c23f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
