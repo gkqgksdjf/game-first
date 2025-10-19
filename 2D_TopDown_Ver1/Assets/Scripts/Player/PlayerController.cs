@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerController : Singleton<PlayerController>
 {
     public bool FacingLeft { get { return facingLeft; } }
-    //public static PlayerController Instance;
 
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float dashSpeed = 4f;
@@ -22,8 +21,6 @@ public class PlayerController : Singleton<PlayerController>
     private bool facingLeft = false;
     private bool isDashing = false;
 
-    //private void Awake() {
-    //    Instance = this;
     protected override void Awake() {
         base.Awake();
         
