@@ -142,6 +142,78 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Inventory"",
+            ""id"": ""b2bdfe37-4dbb-41ac-bb2a-9a546da1a77c"",
+            ""actions"": [
+                {
+                    ""name"": ""Keyboard"",
+                    ""type"": ""Value"",
+                    ""id"": ""68142cac-a2d3-4b8d-bf51-62b11d4a6256"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d9409c92-533f-49ca-b444-3f762c170592"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale"",
+                    ""groups"": """",
+                    ""action"": ""Keyboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d48d94ea-d861-47cc-b750-27e3f8395818"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=2)"",
+                    ""groups"": """",
+                    ""action"": ""Keyboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c19523a-b09f-4395-af89-ea19458709c3"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=3)"",
+                    ""groups"": """",
+                    ""action"": ""Keyboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8bf785d6-9476-449b-ba9a-0dfec6dcacea"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=4)"",
+                    ""groups"": """",
+                    ""action"": ""Keyboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e09a278-2b9b-4526-be36-9b9f794dc048"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=5)"",
+                    ""groups"": """",
+                    ""action"": ""Keyboard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -153,6 +225,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
         m_Combat_Attack = m_Combat.FindAction("Attack", throwIfNotFound: true);
         m_Combat_Dash = m_Combat.FindAction("Dash", throwIfNotFound: true);
+        // Inventory
+        m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
+        m_Inventory_Keyboard = m_Inventory.FindAction("Keyboard", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -310,6 +385,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public CombatActions @Combat => new CombatActions(this);
+
+    // Inventory
+    private readonly InputActionMap m_Inventory;
+    private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
+    private readonly InputAction m_Inventory_Keyboard;
+    public struct InventoryActions
+    {
+        private @PlayerControls m_Wrapper;
+        public InventoryActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Keyboard => m_Wrapper.m_Inventory_Keyboard;
+        public InputActionMap Get() { return m_Wrapper.m_Inventory; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InventoryActions set) { return set.Get(); }
+        public void AddCallbacks(IInventoryActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InventoryActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Add(instance);
+            @Keyboard.started += instance.OnKeyboard;
+            @Keyboard.performed += instance.OnKeyboard;
+            @Keyboard.canceled += instance.OnKeyboard;
+        }
+
+        private void UnregisterCallbacks(IInventoryActions instance)
+        {
+            @Keyboard.started -= instance.OnKeyboard;
+            @Keyboard.performed -= instance.OnKeyboard;
+            @Keyboard.canceled -= instance.OnKeyboard;
+        }
+
+        public void RemoveCallbacks(IInventoryActions instance)
+        {
+            if (m_Wrapper.m_InventoryActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInventoryActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InventoryActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InventoryActions @Inventory => new InventoryActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -318,5 +439,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     {
         void OnAttack(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+    }
+    public interface IInventoryActions
+    {
+        void OnKeyboard(InputAction.CallbackContext context);
     }
 }
